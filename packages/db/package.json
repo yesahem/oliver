@@ -15,10 +15,10 @@
   "devDependencies": {
     "@types/bun": "latest",
     "dotenv": "^17.2.3",
-    "prisma": "^6.19.1"
+    "prisma": "^6.19.3"
   },
   "dependencies": {
-    "@prisma/client": "^6.19.1"
+    "@prisma/client": "^6.19.3"
   },
   "peerDependencies": {
     "typescript": "^5"
