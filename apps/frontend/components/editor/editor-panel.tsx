@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FileCode2, Loader2, Save, X } from "lucide-react";
 import { Button } from "ui/components/button";
 import { cn } from "ui/lib/utils";
@@ -9,7 +9,11 @@ import { languageFromPath } from "@/lib/language";
 import { useWorkspaceStore } from "@/stores/workspace";
 import { Monaco } from "./monaco";
 
-export function EditorPanel() {
+interface EditorPanelProps {
+  syncFile: (path: string, content: string) => void;
+}
+
+export function EditorPanel({ syncFile }: EditorPanelProps) {
   const selectedFileId = useWorkspaceStore((state) => state.selectedFileId);
   const openedFiles = useWorkspaceStore((state) => state.openedFiles);
   const tabOrder = useWorkspaceStore((state) => state.tabOrder);
@@ -21,6 +25,32 @@ export function EditorPanel() {
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const selected = selectedFileId ? openedFiles[selectedFileId] : undefined;
+
+  // Debounce container syncs per path so rapid edits across files each land.
+  const syncTimers = useRef(new Map<string, ReturnType<typeof setTimeout>>());
+  useEffect(() => {
+    const timers = syncTimers.current;
+    return () => {
+      for (const timer of timers.values()) clearTimeout(timer);
+      timers.clear();
+    };
+  }, []);
+
+  const queueSync = useCallback(
+    (path: string, content: string) => {
+      const timers = syncTimers.current;
+      const pending = timers.get(path);
+      if (pending) clearTimeout(pending);
+      timers.set(
+        path,
+        setTimeout(() => {
+          timers.delete(path);
+          syncFile(path, content);
+        }, 300),
+      );
+    },
+    [syncFile],
+  );
 
   const save = useCallback(async () => {
     const state = useWorkspaceStore.getState();
@@ -117,7 +147,10 @@ export function EditorPanel() {
             path={selected.file.path}
             language={languageFromPath(selected.file.path)}
             value={selected.content}
-            onChange={(value) => updateContent(selected.file.id, value)}
+            onChange={(value) => {
+              updateContent(selected.file.id, value);
+              queueSync(selected.file.path, value);
+            }}
           />
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-3 text-muted-foreground">

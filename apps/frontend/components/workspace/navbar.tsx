@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "ui/components/button";
 import { Separator } from "ui/components/separator";
 import { useWorkspaceStore } from "@/stores/workspace";
+import { RuntimeStatus } from "@/components/preview/runtime-status";
 
 export function Navbar() {
   const project = useWorkspaceStore((state) => state.project);
@@ -20,6 +21,9 @@ export function Navbar() {
       <span className="truncate text-sm font-medium">
         {project?.name ?? "Loading..."}
       </span>
+      <div className="ml-auto">
+        <RuntimeStatus />
+      </div>
     </header>
   );
 }

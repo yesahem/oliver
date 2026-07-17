@@ -8,6 +8,7 @@ import {
 } from "ui/components/resizable";
 import type { FileNode, Project } from "@/lib/types";
 import { useWorkspaceStore } from "@/stores/workspace";
+import { useWebContainer } from "@/hooks/use-webcontainer";
 import { Navbar } from "./navbar";
 import { FileExplorer } from "@/components/sidebar/file-explorer";
 import { EditorPanel } from "@/components/editor/editor-panel";
@@ -21,6 +22,7 @@ interface WorkspaceLayoutProps {
 
 export function WorkspaceLayout({ project, fileTree }: WorkspaceLayoutProps) {
   const initialize = useWorkspaceStore((state) => state.initialize);
+  const { retry, syncFile } = useWebContainer();
 
   // Hydrate the store before children first render, then again on prop changes.
   useState(() => initialize(project, fileTree));
@@ -37,11 +39,11 @@ export function WorkspaceLayout({ project, fileTree }: WorkspaceLayoutProps) {
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel defaultSize="38%" minSize="20%">
-          <EditorPanel />
+          <EditorPanel syncFile={syncFile} />
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel defaultSize="26%" minSize="12%">
-          <PreviewPanel />
+          <PreviewPanel onRetry={retry} />
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel defaultSize="20%" minSize="14%">
