@@ -18,6 +18,8 @@ coverage
 # Turbo
 .turbo
 .commandcode/
+plans
+specs
 
 # Vercel
 .vercel
