@@ -1,10 +1,22 @@
 {
   "name": "backend",
-  "module": "index.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "dev": "bun --hot src/index.ts",
+    "start": "bun src/index.ts",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "db": "workspace:*",
+    "express": "^5.1.0",
+    "zod": "^4.1.12"
+  },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3"
   },
   "peerDependencies": {
     "typescript": "^5"
