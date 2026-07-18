@@ -1,4 +1,9 @@
-import type { FileNode, Project } from "./types";
+import type {
+  ChatMessage,
+  FileNode,
+  GenerateResponse,
+  Project,
+} from "./types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 
@@ -33,4 +38,15 @@ export const api = {
       `/projects/${projectId}/files/${fileId}`,
       { method: "PUT", body: JSON.stringify({ content }) },
     ),
+
+  getMessages: (projectId: string) =>
+    request<ChatMessage[]>(`/projects/${projectId}/messages`),
+
+  generate: (projectId: string, prompt: string) =>
+    request<GenerateResponse>("/ai/generate", {
+      method: "POST",
+      body: JSON.stringify({ projectId, prompt }),
+      // Slightly above the backend's 120s Claude timeout.
+      signal: AbortSignal.timeout(130_000),
+    }),
 };

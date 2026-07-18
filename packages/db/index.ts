@@ -11,4 +11,4 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 export { Prisma } from "./generated/prisma/client";
-export type { Project, File } from "./generated/prisma/client";
+export type { Project, File, ChatMessage } from "./generated/prisma/client";

@@ -2,6 +2,7 @@ import express from "express";
 import type { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import { projectsRouter } from "./routes/projects";
+import { aiRouter } from "./ai/routes";
 
 const app = express();
 const port = Number(process.env.PORT) || 4000;
@@ -15,6 +16,7 @@ app.get("/health", (_req, res) => {
 });
 
 app.use("/projects", projectsRouter);
+app.use("/ai", aiRouter);
 
 app.use((_req, res) => {
   res.status(404).json({ error: "Not found" });

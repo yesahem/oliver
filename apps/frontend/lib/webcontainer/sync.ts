@@ -15,3 +15,10 @@ export async function syncFileToContainer(
   }
   await container.fs.writeFile(path, content);
 }
+
+// Removes a file (or folder) deleted by AI operations.
+export async function removeFileFromContainer(path: string): Promise<void> {
+  const container = getBootedContainer();
+  if (!container) return;
+  await container.fs.rm(path, { recursive: true, force: true });
+}

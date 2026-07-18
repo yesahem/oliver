@@ -3,6 +3,7 @@ import { z } from "zod";
 import {
   createProject,
   getProjectWithTree,
+  listMessages,
   listProjects,
   updateFileContent,
 } from "../services/projects.service";
@@ -44,6 +45,18 @@ export async function handleGetProject(
     return;
   }
   res.json(result);
+}
+
+export async function handleListMessages(
+  req: Request<{ id: string }>,
+  res: Response,
+) {
+  const messages = await listMessages(req.params.id);
+  if (!messages) {
+    res.status(404).json({ error: "Project not found" });
+    return;
+  }
+  res.json(messages);
 }
 
 export async function handleUpdateFile(

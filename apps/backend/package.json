@@ -8,6 +8,7 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.112.3",
     "cors": "^2.8.5",
     "db": "workspace:*",
     "express": "^5.1.0",

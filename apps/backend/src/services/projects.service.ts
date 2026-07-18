@@ -1,4 +1,4 @@
-import { prisma, type File, type Project } from "db";
+import { prisma, type ChatMessage, type File, type Project } from "db";
 import { TEMPLATE_FILES } from "./template";
 import { buildFileTree, type FileNode } from "../lib/file-tree";
 
@@ -60,6 +60,15 @@ export async function getProjectWithTree(
 
   const files = await prisma.file.findMany({ where: { projectId: id } });
   return { project, fileTree: buildFileTree(files) };
+}
+
+export async function listMessages(projectId: string): Promise<ChatMessage[] | null> {
+  const project = await prisma.project.findUnique({ where: { id: projectId } });
+  if (!project) return null;
+  return prisma.chatMessage.findMany({
+    where: { projectId },
+    orderBy: { createdAt: "asc" },
+  });
 }
 
 export async function updateFileContent(
